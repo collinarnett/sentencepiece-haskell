@@ -16,13 +16,24 @@ common warnings
 
 library
     import:           warnings
-    exposed-modules:  SentencePiece
+    exposed-modules:  SentencePiece,
+                      SentencePiece.Context,
+                      SentencePiece.Encapsulation,
+                      SentencePiece.Std.String,
+                      SentencePiece.Std.String.Context,
+                      SentencePiece.Std.String.Instances,
+                      SentencePiece.Std.Vector,
+                      SentencePiece.SentencePieceProcessor
     -- other-modules:
     -- other-extensions:
-    -- TODO: figure out how to include sentencepiece's include file here
     build-depends:    base ^>=4.17.2.0,
                       inline-c-cpp,
+                      inline-c,
                       template-haskell,
+                      containers,
+                      bytestring,
+                      vector,
+                      protolude,
                       directory
     hs-source-dirs:   src
     default-language: Haskell2010
@@ -32,6 +43,13 @@ library
     -- 'optcxx':      pass options to c++ compiler
     ghc-options:      -optcxx-Werror
                       -optcxx-std=c++2a
+                      -Werror=incomplete-patterns -Werror=missing-fields
+                      -Wall
+                      -fwarn-tabs
+                      -fwarn-unused-imports
+                      -fwarn-missing-signatures
+                      -fwarn-name-shadowing
+                      -fwarn-incomplete-patterns
 
     cxx-options:      -std=c++2a -Werror
 
