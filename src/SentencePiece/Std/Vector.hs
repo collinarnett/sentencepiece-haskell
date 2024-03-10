@@ -1,10 +1,10 @@
-{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE OverloadedStrings     #-}
-{-# LANGUAGE QuasiQuotes           #-}
-{-# LANGUAGE ScopedTypeVariables   #-}
-{-# LANGUAGE TemplateHaskell       #-}
-{-# LANGUAGE TypeApplications      #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
 {-# OPTIONS_GHC -fno-warn-unused-matches #-}
 
 -- | @std::vector@
@@ -31,19 +31,19 @@ module SentencePiece.Std.Vector
   )
 where
 
-import           Control.Exception            (mask_)
-import           Data.Coerce                  (Coercible, coerce)
-import           Data.Foldable
-import qualified Data.Vector.Storable         as VS
+import Control.Exception (mask_)
+import Data.Coerce (Coercible, coerce)
+import Data.Foldable
+import qualified Data.Vector.Storable as VS
 import qualified Data.Vector.Storable.Mutable as VSM
-import           Foreign
-import           Foreign.C
-import qualified Language.C.Inline            as C
-import qualified Language.C.Inline.Cpp        as C
-import qualified Language.C.Inline.Unsafe     as CU
-import           Language.Haskell.TH
-import           Prelude
-import           SentencePiece.Encapsulation
+import Foreign
+import Foreign.C
+import qualified Language.C.Inline as C
+import qualified Language.C.Inline.Cpp as C
+import qualified Language.C.Inline.Unsafe as CU
+import Language.Haskell.TH
+import SentencePiece.Encapsulation
+import Prelude
 
 data CStdVector a
 

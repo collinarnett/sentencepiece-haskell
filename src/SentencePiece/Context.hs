@@ -1,22 +1,21 @@
-{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE PolyKinds         #-}
-{-# LANGUAGE QuasiQuotes       #-}
-{-# LANGUAGE TemplateHaskell   #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module SentencePiece.Context where
 
-
-import qualified Data.Map                  as M
-import qualified Language.C.Inline         as C
+import qualified Data.Map as M
+import qualified Language.C.Inline as C
 import qualified Language.C.Inline.Context as C
-import qualified Language.C.Inline.Cpp     as C
-import qualified Language.C.Types          as C
-import           Prelude
+import qualified Language.C.Inline.Cpp as C
+import qualified Language.C.Types as C
+import Prelude
 
 data CSentencePieceProcessor
 
-context:: C.Context
+context :: C.Context
 context =
   C.cppCtx
     <> mempty

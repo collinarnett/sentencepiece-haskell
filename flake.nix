@@ -25,8 +25,9 @@
           ];
           buildInputs = with pkgs; [
             cabal-install
-            stylish-haskell
+            ormolu
             sentencepiece
+            haskell-language-server
           ];
           LD_LIBRARY_PATH = lib.makeLibraryPath [pkgs.sentencepiece];
           withHoogle = true;

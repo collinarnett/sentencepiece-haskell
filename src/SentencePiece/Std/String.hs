@@ -1,34 +1,32 @@
-{-# LANGUAGE BlockArguments        #-}
+{-# LANGUAGE BlockArguments #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE OverloadedStrings     #-}
-{-# LANGUAGE QuasiQuotes           #-}
-{-# LANGUAGE ScopedTypeVariables   #-}
-{-# LANGUAGE TemplateHaskell       #-}
-{-# LANGUAGE TypeApplications      #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
 
-module SentencePiece.Std.String (
-  CStdString,
-  stdStringCtx,
+module SentencePiece.Std.String
+  ( CStdString,
+    stdStringCtx,
+    moveToByteString,
+    withString,
+    new,
+    delete,
+    copyToByteString,
+  )
+where
 
-  moveToByteString,
-  withString,
-
-  new,
-  delete,
-
-  copyToByteString
-                                ) where
-
-import           Control.Exception                  (bracket, mask_)
-import           Data.ByteString                    (ByteString)
-import           Data.ByteString.Unsafe             (unsafePackMallocCStringLen)
-import           Foreign                            hiding (new)
-import qualified Language.C.Inline                  as C
-import           Prelude
-import           SentencePiece.Encapsulation
-import           SentencePiece.Std.String.Context
-import           SentencePiece.Std.String.Instances ()
-import           System.IO.Unsafe                   (unsafePerformIO)
+import Control.Exception (bracket, mask_)
+import Data.ByteString (ByteString)
+import Data.ByteString.Unsafe (unsafePackMallocCStringLen)
+import Foreign hiding (new)
+import qualified Language.C.Inline as C
+import SentencePiece.Encapsulation
+import SentencePiece.Std.String.Context
+import SentencePiece.Std.String.Instances ()
+import System.IO.Unsafe (unsafePerformIO)
+import Prelude
 
 C.context (stdStringCtx <> C.bsCtx <> C.fptrCtx)
 

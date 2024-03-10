@@ -6,8 +6,8 @@ module SentencePiece.Encapsulation
   )
 where
 
-import           Foreign (Ptr, nullPtr)
-import           Prelude
+import Foreign (Ptr, nullPtr)
+import Prelude
 
 class HasEncapsulation a b | b -> a where
   -- | Takes ownership of the pointer, freeing/finalizing the pointer when

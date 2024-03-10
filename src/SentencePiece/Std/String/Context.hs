@@ -1,5 +1,5 @@
-{-# LANGUAGE OverloadedStrings     #-}
-{-# LANGUAGE QuasiQuotes           #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE TemplateHaskellQuotes #-}
 
 module SentencePiece.Std.String.Context
@@ -8,12 +8,12 @@ module SentencePiece.Std.String.Context
   )
 where
 
-import qualified Data.Map                  as M
-import qualified Language.C.Inline         as C
+import qualified Data.Map as M
+import qualified Language.C.Inline as C
 import qualified Language.C.Inline.Context as C
-import qualified Language.C.Inline.Cpp     as C
-import qualified Language.C.Types          as C
-import           Prelude
+import qualified Language.C.Inline.Cpp as C
+import qualified Language.C.Types as C
+import Prelude
 
 data CStdString
 
