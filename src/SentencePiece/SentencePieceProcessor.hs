@@ -12,7 +12,7 @@ import qualified Language.C.Inline.Cpp.Exception as C
 import SentencePiece.Context
 import SentencePiece.Encapsulation
 
-C.context (context)
+C.context context
 
 C.include "sentencepiece_processor.h"
 
@@ -28,7 +28,7 @@ newSentencePieceProcessor =
   return processor;
 }|]
 
-deleteSentencePieceProcessor :: FunPtr ((Ptr CSentencePieceProcessor) -> IO ())
+deleteSentencePieceProcessor :: FunPtr (Ptr CSentencePieceProcessor -> IO ())
 deleteSentencePieceProcessor =
   [C.funPtr|
   void delete_sentencepiece_processor(sentencepiece::SentencePieceProcessor* processor) { delete processor; }

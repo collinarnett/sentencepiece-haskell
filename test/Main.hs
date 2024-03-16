@@ -1,10 +1,14 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Main (main) where
 
+import Data.String
+import Protolude
 import SentencePiece
 
 main :: IO ()
 main = do
   processor <- load "./test/test_model.model"
-  tokens <- tokenize processor "Hello World"
-  str <- detokenize processor tokens
+  tokens <- encodeStr processor $ fromString "Hello World"
+  str <- decodeStr processor tokens
   putStrLn str
