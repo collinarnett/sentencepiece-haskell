@@ -1,49 +1,75 @@
-cabal-version:      3.0
-name:               sentencepiece-haskell
-version:            0.1.0.0
+cabal-version:   3.0
+name:            sentencepiece-haskell
+version:         0.1.0.0
+
 -- synopsis:
 -- description:
-license:            NONE
-author:             Collin Arnett
-maintainer:         collin@arnett.it
+license:
+author:          Collin Arnett
+maintainer:      collin@arnett.it
+
 -- copyright:
-build-type:         Simple
-extra-doc-files:    CHANGELOG.md
+build-type:      Simple
+extra-doc-files: CHANGELOG.md
+
 -- extra-source-files:
 
 common warnings
-    ghc-options: -Wall
+  ghc-options: -Wall
 
 library
-    import:           warnings
-    exposed-modules:  SentencePiece
-    -- other-modules:
-    -- other-extensions:
-    -- TODO: figure out how to include sentencepiece's include file here
-    build-depends:    base ^>=4.17.2.0,
-                      inline-c-cpp,
-                      template-haskell,
-                      directory
-    hs-source-dirs:   src
-    default-language: Haskell2010
-    extra-libraries:  sentencepiece,
-                      stdc++
-    extra-ghci-libraries: stdc++
-    -- 'optcxx':      pass options to c++ compiler
-    ghc-options:      -optcxx-Werror
-                      -optcxx-std=c++2a
+  import:               warnings
+  exposed-modules:
+    SentencePiece
+    SentencePiece.Context
+    SentencePiece.Encapsulation
+    SentencePiece.SentencePieceProcessor
+    SentencePiece.Std.String
+    SentencePiece.Std.String.Context
+    SentencePiece.Std.String.Instances
+    SentencePiece.Std.Vector
 
-    cxx-options:      -std=c++2a -Werror
+  -- other-modules:
+  -- other-extensions:
+  build-depends:
+    , base              ^>=4.16.0.0
+    , bytestring
+    , containers
+    , directory
+    , inline-c
+    , inline-c-cpp
+    , protolude
+    , template-haskell
+    , vector
+
+  hs-source-dirs:       src
+  default-language:     Haskell2010
+  extra-libraries:
+    sentencepiece
+    stdc++
+
+  extra-ghci-libraries: stdc++
+
+  -- 'optcxx':      pass options to c++ compiler
+  ghc-options:
+    -optcxx-Werror -optcxx-std=c++2a -Werror=incomplete-patterns
+    -Werror=missing-fields -Wall -fwarn-tabs -fwarn-unused-imports
+    -fwarn-missing-signatures -fwarn-name-shadowing
+    -fwarn-incomplete-patterns
+
+  cxx-options:          -std=c++2a -Werror
 
 test-suite sentencepiece-haskell-test
-    import:           warnings
-    default-language: Haskell2010
-    -- other-modules:
-    -- other-extensions:
-    type:             exitcode-stdio-1.0
-    hs-source-dirs:   test
-    main-is:          Main.hs
-    build-depends:
-        base ^>=4.17.2.0,
-        sentencepiece-haskell,
-        hspec 
+  import:           warnings
+  default-language: Haskell2010
+
+  -- other-modules:
+  -- other-extensions:
+  type:             exitcode-stdio-1.0
+  hs-source-dirs:   test
+  main-is:          Main.hs
+  build-depends:
+    , base                   ^>=4.16.0.0
+    , hspec
+    , protolude
+    , sentencepiece-haskell

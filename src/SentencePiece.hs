@@ -1,53 +1,79 @@
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
-module SentencePiece where
-import System.Directory (makeAbsolute) 
-import           Foreign.C.String             
-import           Foreign.Ptr                  (Ptr)
-import qualified Language.C.Inline.Cpp        as C
+module SentencePiece
+  ( encodeStr,
+    load,
+    decodeStr,
+  )
+where
+
+import Data.ByteString hiding (map)
+import Foreign.C.String
+import Foreign.ForeignPtr
+import Foreign.Ptr
+import qualified Language.C.Inline.Context as C
+import qualified Language.C.Inline.Cpp as C
 import qualified Language.C.Inline.Cpp.Unsafe as C
+import Protolude
+import SentencePiece.Context
+import SentencePiece.Encapsulation (moveToForeignPtrWrapper)
+import SentencePiece.SentencePieceProcessor
+import SentencePiece.Std.String (stdStringCtx)
+import qualified SentencePiece.Std.String as Std.String
+import SentencePiece.Std.String.Instances ()
+import SentencePiece.Std.Vector (stdVectorCtx)
+import qualified SentencePiece.Std.Vector as Std.Vector
+import System.Directory (makeAbsolute)
 
-data SentencePieceProcessor
-data StdString
-data StdVector a
+C.context (context <> stdVectorCtx <> stdStringCtx <> C.fptrCtx)
 
-C.context $ C.cppCtx <> C.cppTypePairs [
-  ("sentencepiece::SentencePieceProcessor", [t|SentencePieceProcessor|]),
-  ("std::string", [t|StdString|]),
-  ("std::vector", [t|StdVector|])]
-
-C.include "vector"
-C.include "string"
+C.include "<cstring>"
+C.include "<string>"
+C.include "<vector>"
 C.include "sentencepiece_processor.h"
 
-string_c_str
-  :: Ptr StdString
-  -> IO String
-string_c_str str = [C.throwBlock| const char* { return (*$(std::string* str)).c_str();}|] >>= peekCString
+byteStringList :: IO (Ptr (Std.Vector.CStdVector Std.String.CStdString)) -> IO [ByteString]
+byteStringList x =
+  x
+    >>= moveToForeignPtrWrapper
+    >>= Std.Vector.toListFP
+    >>= traverse Std.String.copyToByteString
 
-load :: FilePath -> IO (Ptr SentencePieceProcessor)
-load model = do
-  fp <- makeAbsolute model
-  withCString fp $ \cmodel -> [C.throwBlock|sentencepiece::SentencePieceProcessor* {
-    auto processor = new sentencepiece::SentencePieceProcessor();
-    processor->LoadOrDie($(char* cmodel));
-    return processor;
-}|]
+load :: FilePath -> IO SentencePieceProcessor
+load fp = do
+  model <- makeAbsolute fp
+  processor <- newSentencePieceProcessor >>= newForeignPtr deleteSentencePieceProcessor
+  withForeignPtr processor $
+    \cprocessor -> withCString model $
+      \cmodel ->
+        [C.throwBlock|void {
+    $(sentencepiece::SentencePieceProcessor* cprocessor)->LoadOrDie($(char* cmodel));
+  }|]
+  return $ SentencePieceProcessor processor
 
-tokenize :: Ptr SentencePieceProcessor -> String -> IO (Ptr (StdVector StdString))
-tokenize processor text = withCString text $ \ctext -> [C.throwBlock|std::vector<std::string>* {
-    std::vector<std::string>* pieces = new std::vector<std::string>();
-    $(sentencepiece::SentencePieceProcessor* processor)->Encode($(char *ctext), pieces);
-    return pieces;
-}|]
+encodeStr :: SentencePieceProcessor -> ByteString -> IO [ByteString]
+encodeStr (SentencePieceProcessor processor) text = byteStringList $
+  Std.String.withString text $ \cstring ->
+    withForeignPtr processor $ \cprocessor ->
+      [C.throwBlock|std::vector<std::string>* {
+      auto pieces = new std::vector<std::string>();
+      $(sentencepiece::SentencePieceProcessor* cprocessor)->Encode(*$(std::string *cstring), pieces);
+      return pieces;
+    }|]
 
-detokenize :: Ptr SentencePieceProcessor -> Ptr (StdVector StdString) -> IO String
-detokenize processor pieces = do
-  result <- [C.throwBlock|std::string* {
-   std::string* text = new std::string();
-   $(sentencepiece::SentencePieceProcessor* processor)->Decode(*$(std::vector<std::string>* pieces), text);
-   return text;
-}|]
-  string_c_str result
+decodeStr :: SentencePieceProcessor -> [ByteString] -> IO ByteString
+decodeStr (SentencePieceProcessor processor) pieces = do
+  vec <- Std.Vector.new
+  for_ pieces (\p -> Std.String.withString p (Std.Vector.pushBackP vec))
+  result <- withForeignPtr processor $ \cprocessor ->
+    [C.throwBlock| std::string* {
+            auto text = new std::string();
+            $(sentencepiece::SentencePieceProcessor* cprocessor)->Decode(*$fptr-ptr:(std::vector<std::string>* vec), text);
+            return text;
+        }|]
+  Std.String.moveToByteString result
