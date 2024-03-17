@@ -6,7 +6,9 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
 module SentencePiece
-  ( module SentencePiece,
+  ( encodeStr,
+    load,
+    decodeStr,
   )
 where
 

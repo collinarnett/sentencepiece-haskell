@@ -6,6 +6,12 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeApplications #-}
 
+-- |
+--  This software includes modifications based on code from the "Hercules CI Agent" project
+--  (https://github.com/hercules-ci/hercules-ci-agent), licensed under the Apache License 2.0.
+--  Original Apache License 2.0 applies to these modifications.
+--  For the original license, see http://www.apache.org/licenses/LICENSE-2.0.
+--  We thank Hercules CI for their contributions to the open source community.
 module SentencePiece.Std.String
   ( CStdString,
     stdStringCtx,
