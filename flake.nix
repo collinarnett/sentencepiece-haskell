@@ -16,6 +16,9 @@
     } {
       imports = [inputs.treefmt-nix.flakeModule];
       systems = ["x86_64-linux"];
+      flake.overlays.default = final-haskell: prev-haskell: {
+        sentencepiece-haskell = final-haskell.callCabal2nix "sentencepiece-haskell" ./. {};
+      };
       perSystem = {
         system,
         pkgs,
