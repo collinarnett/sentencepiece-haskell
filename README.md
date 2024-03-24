@@ -6,9 +6,13 @@ A very simple library containing haskell bindings for Google's
 ## Usage
 
 ``` haskell
--- Load a sentencepiece model
-let processor = load "./path/to/some-tokenizer.model" :: Ptr SentencePieceProcessor
-detokenize processor (tokenize processor "Hello World" :: Ptr(StdVector StdString)) :: IO String
+import SentencePiece
+import Protolude
+
+main = do
+ processor <- load "/path/to/some/model"
+ encodedTokens <- encodeStr processor $ fromString "Hello World"
+ decodedTokens <- decodeStr processor encodedTokens
 ```
 ## Setup
 
