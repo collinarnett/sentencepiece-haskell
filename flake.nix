@@ -43,8 +43,9 @@
           ];
           buildInputs = with pkgs; [
             cabal-install
-            sentencepiece
             haskell-language-server
+            nil
+            sentencepiece
           ];
           LD_LIBRARY_PATH = lib.makeLibraryPath [pkgs.sentencepiece];
           withHoogle = true;

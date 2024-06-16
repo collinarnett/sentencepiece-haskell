@@ -32,7 +32,7 @@ library
   -- other-modules:
   -- other-extensions:
   build-depends:
-    , base              ^>=4.16.0.0
+    , base              >=4.16.0.0
     , bytestring
     , containers
     , directory
@@ -69,7 +69,7 @@ test-suite sentencepiece-haskell-test
   hs-source-dirs:   test
   main-is:          Main.hs
   build-depends:
-    , base                   ^>=4.16.0.0
+    , base                   >=4.16.0.0
     , hspec
     , protolude
     , sentencepiece-haskell
